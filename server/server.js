@@ -87,6 +87,19 @@ function publicUser(user) {
   return { ...safe, username: safe.username || safe.email?.split('@')[0] || '' };
 }
 
+function parseDurationHours(value) {
+  if (value === undefined || value === null || String(value).trim() === '') return null;
+  const hours = Number(value);
+  if (!Number.isFinite(hours) || hours < 0.1 || hours > 168) return null;
+  return Math.round(hours * 10) / 10;
+}
+
+function hasValidDurationHours(value) {
+  if (value === undefined || value === null || String(value).trim() === '') return true;
+  const hours = Number(value);
+  return Number.isFinite(hours) && hours >= 0.1 && hours <= 168;
+}
+
 function validateClient(body) {
   const required = [
     'name',
@@ -115,6 +128,10 @@ function publicClient(client, db) {
     company: client.company,
     computer: client.computer || '',
     tariff: client.tariff || '',
+    tariffDurationHours: client.tariffDurationHours ?? '',
+    tariffEndsAt: client.tariffEndsAt || null,
+    tariffType: client.tariffType || 'timed',
+    tariffState: client.tariffState || 'active',
     status: client.status,
     source: client.source,
     notes: client.notes,
@@ -288,10 +305,17 @@ app.get('/api/my/clients', auth, (req, res) => {
 app.post('/api/clients', auth, (req, res) => {
   const db = readDb(); const clubId = requireClub(req, res, db); if (!clubId) return;
   if (!validateClient(req.body)) return res.status(400).json({message: 'Заполните все обязательные поля'});
+  if (!hasValidDurationHours(req.body.durationHours)) return res.status(400).json({ message: 'Время тарифа должно быть от 0.1 до 168 часов' });
   const client = { id: createId('client'), clubId, ownerId: req.user.id,
     name: req.body.name.trim(), email: req.body.email.trim().toLowerCase(),
     phone: req.body.phone.trim(), company: req.body.company.trim(),
     computer: String(req.body.computer || '').trim(), tariff: String(req.body.tariff || '').trim(),
+    tariffDurationHours: parseDurationHours(req.body.durationHours),
+    tariffType: 'timed',
+    tariffEndsAt: parseDurationHours(req.body.durationHours) !== null
+      ? new Date(Date.now() + parseDurationHours(req.body.durationHours) * 3600000).toISOString()
+      : null,
+    tariffState: 'active',
     status: req.body.status, source: req.body.source, notes: String(req.body.notes || '').trim(),
     createdAt: new Date().toISOString() };
   db.clients.push(client); writeDb(db); res.status(201).json(publicClient(client, db));
@@ -301,11 +325,21 @@ app.put('/api/clients/:id', auth, (req, res) => {
   const index = db.clients.findIndex((item) => item.id === req.params.id && item.clubId === clubId);
   if (index === -1) return res.status(404).json({message: 'Клиент не найден'});
   if (!validateClient(req.body)) return res.status(400).json({message: 'Заполните все обязательные поля'});
+  if (!hasValidDurationHours(req.body.durationHours)) return res.status(400).json({ message: 'Время тарифа должно быть от 0.1 до 168 часов' });
   const client = db.clients[index];
+  const requestedDuration = parseDurationHours(req.body.durationHours);
+  const oldDuration = client.tariffDurationHours ?? null;
+  const durationChanged = requestedDuration !== oldDuration;
   db.clients[index] = { ...client, name: req.body.name.trim(), email: req.body.email.trim().toLowerCase(),
     phone: req.body.phone.trim(), company: req.body.company.trim(), computer: String(req.body.computer || '').trim(),
-    tariff: String(req.body.tariff || '').trim(), status: req.body.status, source: req.body.source,
-    notes: String(req.body.notes || '').trim() };
+    tariff: String(req.body.tariff || '').trim(),
+    tariffDurationHours: requestedDuration,
+    ...(durationChanged ? {
+      tariffType: 'timed',
+      tariffEndsAt: requestedDuration !== null ? new Date(Date.now() + requestedDuration * 3600000).toISOString() : null,
+      tariffState: 'active'
+    } : {}),
+    status: req.body.status, source: req.body.source, notes: String(req.body.notes || '').trim() };
   writeDb(db); res.json(publicClient(db.clients[index], db));
 });
 app.delete('/api/clients/:id', auth, (req, res) => {

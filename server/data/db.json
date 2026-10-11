@@ -1895,6 +1895,28 @@
       "company": "Посетитель клуба",
       "status": "pending",
       "createdAt": "2026-10-11T17:19:09.129Z"
+    },
+    {
+      "id": "walkin_1791742541883_epprbr",
+      "clubId": "club_default",
+      "dummyUserId": 1,
+      "name": "Emily Johnson",
+      "email": "emily.johnson@x.dummyjson.com",
+      "phone": "+81 965-431-3024",
+      "company": "Посетитель клуба",
+      "status": "pending",
+      "createdAt": "2026-10-11T18:15:41.884Z"
+    },
+    {
+      "id": "walkin_1791742566052_b17z14",
+      "clubId": "club_default",
+      "dummyUserId": 2,
+      "name": "Michael Williams",
+      "email": "michael.williams@x.dummyjson.com",
+      "phone": "+49 258-627-6644",
+      "company": "Посетитель клуба",
+      "status": "pending",
+      "createdAt": "2026-10-11T18:16:06.052Z"
     }
   ]
 }

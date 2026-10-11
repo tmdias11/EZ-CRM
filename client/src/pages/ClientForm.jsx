@@ -12,6 +12,7 @@ const empty = {
   company: '',
   computer: '',
   tariff: '',
+  durationHours: '',
   status: 'new',
   source: 'site',
   notes: ''
@@ -30,7 +31,13 @@ function ClientForm() {
   useEffect(() => {
     if (edit) {
       api.client(id)
-        .then(setForm)
+        .then((client) => setForm({
+          ...empty,
+          ...client,
+          durationHours: client.tariffDurationHours ?? (client.tariffEndsAt
+            ? Math.max(0, (new Date(client.tariffEndsAt).getTime() - Date.now()) / 3600000).toFixed(1)
+            : '')
+        }))
         .catch((e) => setError(e.message))
         .finally(() => setLoading(false));
     }
@@ -189,6 +196,25 @@ function ClientForm() {
 
             <small className="field-hint">
               Необязательно
+            </small>
+          </label>
+
+          <label>
+            Время тарифа (часов)
+
+            <input
+              type="number"
+              name="durationHours"
+              min="0.1"
+              max="168"
+              step="0.1"
+              value={form.durationHours ?? ''}
+              onChange={change}
+              placeholder="Например: 2.5"
+            />
+
+            <small className="field-hint">
+              Необязательно. При указании времени отсчёт начинается с текущего момента. Максимум — 168 часов.
             </small>
           </label>
 
