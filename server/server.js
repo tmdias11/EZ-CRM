@@ -9,7 +9,7 @@ import {fileURLToPath} from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DB_PATH = path.join(__dirname, 'data', 'db.json');
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 const SECRET = process.env.JWT_SECRET || 'crm-client-secret-2026';
 
 app.use(express.json());
