@@ -339,18 +339,50 @@ app.post('/api/clubs', auth, (req, res) => {
   user.clubMemberships ||= []; user.clubMemberships.push({ clubId: club.id, role: 'manager' });
   writeDb(db); res.status(201).json({ ...club, myRole: 'manager' });
 });
+
 app.get('/api/clubs/users/search', auth, (req, res) => {
-  const db = readDb(); const clubId = String(req.headers['x-club-id'] || '');
+  const db = readDb();
+  const clubId = String(req.headers['x-club-id'] || '');
   const user = db.users.find((u) => u.id === req.user.id);
-  if (!clubId || (req.user.role !== 'admin' && membership(user, clubId)?.role !== 'manager'))
-    return res.status(403).json({ message: 'Добавлять менеджеров могут администраторы сайта и менеджеры этого клуба' });
+
+  if (
+    !clubId ||
+    (req.user.role !== 'admin' &&
+      membership(user, clubId)?.role !== 'manager')
+  ) {
+    return res.status(403).json({
+      message: 'Добавлять менеджеров могут администраторы сайта и менеджеры этого клуба'
+    });
+  }
+
   const q = String(req.query.q || '').trim().toLowerCase();
+
   if (q.length < 2) return res.json([]);
-  res.json(db.users.filter((u) => u.id !== req.user.id &&
-    ((u.username || u.email.split('@')[0]).toLowerCase().includes(q)))
-    .slice(0, 20).map((u) => ({ id: u.id, username: u.username || u.email.split('@')[0], name: u.name, email: u.email,
-      isManager: Boolean(membership(u, clubId)) })));
+
+  const results = db.users
+    .filter((u) => {
+      if (u.id === req.user.id) return false;
+
+      const username = String(
+        u.username || u.email?.split('@')[0] || ''
+      ).toLowerCase();
+
+      const email = String(u.email || '').trim().toLowerCase();
+
+      return username.includes(q) || email.includes(q);
+    })
+    .slice(0, 20)
+    .map((u) => ({
+      id: u.id,
+      username: u.username || u.email?.split('@')[0] || '',
+      name: u.name,
+      email: u.email,
+      isManager: Boolean(membership(u, clubId))
+    }));
+
+  res.json(results);
 });
+
 app.post('/api/clubs/:id/managers', auth, (req, res) => {
   const db = readDb(); const clubId = req.params.id; const user = db.users.find((u) => u.id === req.user.id);
   if (req.user.role !== 'admin' && membership(user, clubId)?.role !== 'manager')
