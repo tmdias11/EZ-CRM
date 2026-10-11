@@ -35,6 +35,8 @@ jobs:
 
       - name: Build
         working-directory: client
+        env:
+          VITE_API_URL: https://ez-crm.onrender.com
         run: npm run build
 
       - name: Setup Pages
