@@ -1939,6 +1939,28 @@
       "company": "Посетитель клуба",
       "status": "pending",
       "createdAt": "2026-10-11T18:16:56.096Z"
+    },
+    {
+      "id": "walkin_1791742641110_wspcuo",
+      "clubId": "club_default",
+      "dummyUserId": 5,
+      "name": "Emma Miller",
+      "email": "emma.miller@x.dummyjson.com",
+      "phone": "+91 759-776-1614",
+      "company": "Посетитель клуба",
+      "status": "pending",
+      "createdAt": "2026-10-11T18:17:21.110Z"
+    },
+    {
+      "id": "walkin_1791742666138_zu48ld",
+      "clubId": "club_default",
+      "dummyUserId": 6,
+      "name": "Olivia Wilson",
+      "email": "olivia.wilson@x.dummyjson.com",
+      "phone": "+91 607-295-6448",
+      "company": "Посетитель клуба",
+      "status": "pending",
+      "createdAt": "2026-10-11T18:17:46.138Z"
     }
   ]
 }
