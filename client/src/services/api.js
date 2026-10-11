@@ -1,12 +1,16 @@
+const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+
 async function request(url, options = {}) {
-  const response = await fetch(url, {
+  const response = await fetch(`${API_URL}${url}`, {
+    ...options,
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      ...(localStorage.getItem('activeClubId') ? { 'X-Club-Id': localStorage.getItem('activeClubId') } : {}),
+      ...(localStorage.getItem('activeClubId')
+        ? { 'X-Club-Id': localStorage.getItem('activeClubId') }
+        : {}),
       ...(options.headers || {})
-    },
-    ...options
+    }
   });
 
   const data = await response.json().catch(() => ({}));
@@ -19,11 +23,6 @@ async function request(url, options = {}) {
 }
 
 export const api = {
-
-  // =====================================================
-  // AUTH
-  // =====================================================
-
   register: (body) =>
     request('/api/auth/register', {
       method: 'POST',
@@ -43,11 +42,6 @@ export const api = {
 
   me: () =>
     request('/api/auth/me'),
-
-
-  // =====================================================
-  // CLIENTS
-  // =====================================================
 
   clients: () =>
     request('/api/clients'),
@@ -75,11 +69,6 @@ export const api = {
       method: 'DELETE'
     }),
 
-
-  // =====================================================
-  // PROFILE
-  // =====================================================
-
   profile: () =>
     request('/api/auth/me'),
 
@@ -88,11 +77,6 @@ export const api = {
       method: 'PUT',
       body: JSON.stringify(body)
     }),
-
-
-  // =====================================================
-  // TASKS
-  // =====================================================
 
   tasks: () =>
     request('/api/tasks'),
@@ -117,23 +101,48 @@ export const api = {
       method: 'DELETE'
     }),
 
+  clubs: () =>
+    request('/api/clubs'),
 
-  // =====================================================
-  // CLUBS
-  // =====================================================
-  clubs: () => request('/api/clubs'),
-  createClub: (body) => request('/api/clubs', { method: 'POST', body: JSON.stringify(body) }),
-  searchClubUsers: (q) => request(`/api/clubs/users/search?q=${encodeURIComponent(q)}`),
-  addClubManager: (clubId, userId) => request(`/api/clubs/${clubId}/managers`, { method: 'POST', body: JSON.stringify({ userId }) }),
-  clubFloor: () => request('/api/club-floor'),
-  acceptWalkIn: (id, body) => request(`/api/club-floor/${id}/accept`, { method: 'POST', body: JSON.stringify(body) }),
-  rejectWalkIn: (id) => request(`/api/club-floor/${id}/reject`, { method: 'POST' }),
-  extendClubClient: (id, body) => request(`/api/club-floor/clients/${id}/extend`, { method: 'POST', body: JSON.stringify(body) }),
-  closeClubClient: (id) => request(`/api/club-floor/clients/${id}/close`, { method: 'POST' }),
+  createClub: (body) =>
+    request('/api/clubs', {
+      method: 'POST',
+      body: JSON.stringify(body)
+    }),
 
-  // =====================================================
-  // ADMIN
-  // =====================================================
+  searchClubUsers: (q) =>
+    request(`/api/clubs/users/search?q=${encodeURIComponent(q)}`),
+
+  addClubManager: (clubId, userId) =>
+    request(`/api/clubs/${clubId}/managers`, {
+      method: 'POST',
+      body: JSON.stringify({ userId })
+    }),
+
+  clubFloor: () =>
+    request('/api/club-floor'),
+
+  acceptWalkIn: (id, body) =>
+    request(`/api/club-floor/${id}/accept`, {
+      method: 'POST',
+      body: JSON.stringify(body)
+    }),
+
+  rejectWalkIn: (id) =>
+    request(`/api/club-floor/${id}/reject`, {
+      method: 'POST'
+    }),
+
+  extendClubClient: (id, body) =>
+    request(`/api/club-floor/clients/${id}/extend`, {
+      method: 'POST',
+      body: JSON.stringify(body)
+    }),
+
+  closeClubClient: (id) =>
+    request(`/api/club-floor/clients/${id}/close`, {
+      method: 'POST'
+    }),
 
   adminUsers: () =>
     request('/api/admin/users'),
