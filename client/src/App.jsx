@@ -1,5 +1,5 @@
 import {
-  BrowserRouter,
+  HashRouter,
   Routes,
   Route
 } from 'react-router-dom';
@@ -28,7 +28,7 @@ import './styles/global.css';
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <AuthProvider>
 
         <Routes>
@@ -129,7 +129,7 @@ function App() {
         </Routes>
 
       </AuthProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
