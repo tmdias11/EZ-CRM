@@ -12,6 +12,18 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const SECRET = process.env.JWT_SECRET || 'crm-client-secret-2026';
 
+const COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'none',
+  maxAge: 7 * 24 * 60 * 60 * 1000
+};
+
+app.use(cors({
+  origin: 'https://tmdias11.github.io',
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -134,7 +146,7 @@ app.post('/api/auth/register', async (req, res) => {
   db.users.push(user);
   writeDb(db);
   const token = createToken(user);
-  res.cookie('crm_token', token, {httpOnly: true, sameSite: 'lax', maxAge: 7 * 24 * 60 * 60 * 1000});
+  res.cookie('crm_token', token, COOKIE_OPTIONS);
   res.status(201).json({id: user.id, name: user.name, email: user.email, username: user.username, role: user.role});
 });
 
@@ -147,12 +159,16 @@ app.post('/api/auth/login', async (req, res) => {
     return res.status(401).json({message: 'Неверный email или пароль'});
   }
   const token = createToken(user);
-  res.cookie('crm_token', token, {httpOnly: true, sameSite: 'lax', maxAge: 7 * 24 * 60 * 60 * 1000});
+  res.cookie('crm_token', token, COOKIE_OPTIONS);
   res.json({id: user.id, name: user.name, email: user.email, username: user.username, role: user.role});
 });
 
 app.post('/api/auth/logout', (req, res) => {
-  res.clearCookie('crm_token', {httpOnly: true, sameSite: 'lax'});
+  res.clearCookie('crm_token', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none'
+  });
   res.json({message: 'Вы вышли из системы'});
 });
 
@@ -240,15 +256,7 @@ app.put('/api/auth/me', auth, async (req, res) => {
 
   const token = createToken(user);
 
-  res.cookie(
-    'crm_token',
-    token,
-    {
-      httpOnly: true,
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    }
-  );
+  res.cookie('crm_token', token, COOKIE_OPTIONS);
 
   res.json({
     id: user.id,

@@ -1774,6 +1774,127 @@
       "company": "Посетитель клуба",
       "status": "pending",
       "createdAt": "2026-10-11T17:14:33.846Z"
+    },
+    {
+      "id": "walkin_1791738898847_afq14e",
+      "clubId": "club_default",
+      "dummyUserId": 12,
+      "name": "Mia Rodriguez",
+      "email": "mia.rodriguez@x.dummyjson.com",
+      "phone": "+49 989-461-8403",
+      "company": "Посетитель клуба",
+      "status": "pending",
+      "createdAt": "2026-10-11T17:14:58.847Z"
+    },
+    {
+      "id": "walkin_1791738923859_v06wor",
+      "clubId": "club_default",
+      "dummyUserId": 13,
+      "name": "Noah Hernandez",
+      "email": "noah.hernandez@x.dummyjson.com",
+      "phone": "+49 393-605-6968",
+      "company": "Посетитель клуба",
+      "status": "pending",
+      "createdAt": "2026-10-11T17:15:23.860Z"
+    },
+    {
+      "id": "walkin_1791738948861_c3y8e4",
+      "clubId": "club_default",
+      "dummyUserId": 14,
+      "name": "Charlotte Lopez",
+      "email": "charlotte.lopez@x.dummyjson.com",
+      "phone": "+44 373-953-5028",
+      "company": "Посетитель клуба",
+      "status": "pending",
+      "createdAt": "2026-10-11T17:15:48.861Z"
+    },
+    {
+      "id": "walkin_1791738973869_jra7b3",
+      "clubId": "club_default",
+      "dummyUserId": 15,
+      "name": "William Gonzalez",
+      "email": "william.gonzalez@x.dummyjson.com",
+      "phone": "+81 905-252-7319",
+      "company": "Посетитель клуба",
+      "status": "pending",
+      "createdAt": "2026-10-11T17:16:13.869Z"
+    },
+    {
+      "id": "walkin_1791738998883_zqv3h2",
+      "clubId": "club_default",
+      "dummyUserId": 16,
+      "name": "Avery Perez",
+      "email": "avery.perez@x.dummyjson.com",
+      "phone": "+61 731-431-3457",
+      "company": "Посетитель клуба",
+      "status": "pending",
+      "createdAt": "2026-10-11T17:16:38.883Z"
+    },
+    {
+      "id": "walkin_1791739023888_6vfabi",
+      "clubId": "club_default",
+      "dummyUserId": 17,
+      "name": "Evelyn Sanchez",
+      "email": "evelyn.sanchez@x.dummyjson.com",
+      "phone": "+1 623-880-6871",
+      "company": "Посетитель клуба",
+      "status": "pending",
+      "createdAt": "2026-10-11T17:17:03.888Z"
+    },
+    {
+      "id": "walkin_1791739048887_kg7gt5",
+      "clubId": "club_default",
+      "dummyUserId": 18,
+      "name": "Logan Torres",
+      "email": "logan.torres@x.dummyjson.com",
+      "phone": "+81 507-434-8733",
+      "company": "Посетитель клуба",
+      "status": "pending",
+      "createdAt": "2026-10-11T17:17:28.887Z"
+    },
+    {
+      "id": "walkin_1791739073899_7ub5s0",
+      "clubId": "club_default",
+      "dummyUserId": 19,
+      "name": "Abigail Rivera",
+      "email": "abigail.rivera@x.dummyjson.com",
+      "phone": "+91 228-363-7806",
+      "company": "Посетитель клуба",
+      "status": "pending",
+      "createdAt": "2026-10-11T17:17:53.899Z"
+    },
+    {
+      "id": "walkin_1791739098918_qkc24e",
+      "clubId": "club_default",
+      "dummyUserId": 20,
+      "name": "Jackson Evans",
+      "email": "jackson.evans@x.dummyjson.com",
+      "phone": "+44 468-628-6686",
+      "company": "Посетитель клуба",
+      "status": "pending",
+      "createdAt": "2026-10-11T17:18:18.918Z"
+    },
+    {
+      "id": "walkin_1791739123923_d23yji",
+      "clubId": "club_default",
+      "dummyUserId": 21,
+      "name": "Madison Collins",
+      "email": "madison.collins@x.dummyjson.com",
+      "phone": "+81 259-957-5711",
+      "company": "Посетитель клуба",
+      "status": "pending",
+      "createdAt": "2026-10-11T17:18:43.923Z"
+    },
+    {
+      "id": "walkin_1791739149129_hqwyue",
+      "clubId": "club_default",
+      "dummyUserId": 22,
+      "name": "Elijah Stewart",
+      "email": "elijah.stewart@x.dummyjson.com",
+      "phone": "+44 468-357-7872",
+      "company": "Посетитель клуба",
+      "status": "pending",
+      "createdAt": "2026-10-11T17:19:09.129Z"
     }
   ]
 }
