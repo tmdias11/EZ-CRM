@@ -1917,6 +1917,28 @@
       "company": "Посетитель клуба",
       "status": "pending",
       "createdAt": "2026-10-11T18:16:06.052Z"
+    },
+    {
+      "id": "walkin_1791742591069_vv8k3p",
+      "clubId": "club_default",
+      "dummyUserId": 3,
+      "name": "Sophia Brown",
+      "email": "sophia.brown@x.dummyjson.com",
+      "phone": "+81 210-652-2785",
+      "company": "Посетитель клуба",
+      "status": "pending",
+      "createdAt": "2026-10-11T18:16:31.069Z"
+    },
+    {
+      "id": "walkin_1791742616096_vtx2vt",
+      "clubId": "club_default",
+      "dummyUserId": 4,
+      "name": "James Davis",
+      "email": "james.davis@x.dummyjson.com",
+      "phone": "+49 614-958-9364",
+      "company": "Посетитель клуба",
+      "status": "pending",
+      "createdAt": "2026-10-11T18:16:56.096Z"
     }
   ]
 }
