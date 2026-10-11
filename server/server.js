@@ -29,8 +29,16 @@ app.use(express.json());
 app.use(cookieParser());
 
 function readDb() {
-  return JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
+  const db = JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
+
+  if (!Array.isArray(db.users)) db.users = [];
+  if (!Array.isArray(db.clubs)) db.clubs = [];
+  if (!Array.isArray(db.clients)) db.clients = [];
+  if (!Array.isArray(db.tasks)) db.tasks = [];
+
+  return db;
 }
+
 
 function writeDb(db) {
   fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2));
