@@ -78,7 +78,6 @@ function selectedClub(req, db) {
   const user = db.users.find((u) => u.id === req.user.id);
   const requestedId = String(req.headers['x-club-id'] || '');
   if (requestedId) return canAccessClub(user, requestedId) ? requestedId : null;
-  // First visit: choose an accessible club without exposing any other club's data.
   const accessible = (db.clubs || []).find((club) => canAccessClub(user, club.id));
   return accessible?.id || null;
 }
@@ -438,44 +437,88 @@ app.post('/api/clubs/:id/managers', auth, (req, res) => {
   res.status(201).json({ message: 'Менеджер добавлен', userId: target.id });
 });
 
-
-
-// Club floor: synthetic walk-in leads are sourced from DummyJSON every 25 seconds.
 const FLOOR_INTERVAL_MS = 25_000;
+const MAX_CLIENTS_PER_CLUB = 25;
+
 let dummyUsers = [];
 let dummyCursor = 0;
 let floorSyncRunning = false;
+
 async function syncDummyLeads() {
   if (floorSyncRunning) return;
   floorSyncRunning = true;
+
   try {
     if (!dummyUsers.length) {
       const response = await fetch('https://dummyjson.com/users?limit=100');
-      if (!response.ok) throw new Error(`DummyJSON HTTP ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`DummyJSON HTTP ${response.status}`);
+      }
+
       const payload = await response.json();
       dummyUsers = Array.isArray(payload.users) ? payload.users : [];
     }
+
     if (!dummyUsers.length) return;
+
     const db = readDb();
     const clubs = db.clubs || [];
     if (!clubs.length) return;
+
     db.clubQueue ||= [];
-    // One incoming visitor per club on each 25-second tick.
+
     for (const club of clubs) {
+      const clubClients = db.clubQueue
+        .filter(item => item.clubId === club.id)
+        .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+
+      if (clubClients.length >= MAX_CLIENTS_PER_CLUB) {
+        const idsToRemove = new Set(
+          clubClients
+            .slice(0, clubClients.length - MAX_CLIENTS_PER_CLUB + 1)
+            .map(item => item.id)
+        );
+
+        db.clubQueue = db.clubQueue.filter(
+          item => !idsToRemove.has(item.id)
+        );
+      }
+
+      const currentCount = db.clubQueue.filter(
+        item => item.clubId === club.id
+      ).length;
+
+      if (currentCount >= MAX_CLIENTS_PER_CLUB) continue;
+
       const source = dummyUsers[dummyCursor % dummyUsers.length];
       dummyCursor += 1;
+
       db.clubQueue.push({
-        id: createId('walkin'), clubId: club.id, dummyUserId: source.id,
-        name: `${source.firstName || ''} ${source.lastName || ''}`.trim() || source.username || 'Новый клиент',
-        email: source.email || '', phone: source.phone || '', company: 'Посетитель клуба',
-        status: 'pending', createdAt: new Date().toISOString()
+        id: createId('walkin'),
+        clubId: club.id,
+        dummyUserId: source.id,
+        name: `${source.firstName || ''} ${source.lastName || ''}`.trim()
+          || source.username
+          || 'Новый клиент',
+        email: source.email || '',
+        phone: source.phone || '',
+        company: 'Посетитель клуба',
+        status: 'pending',
+        createdAt: new Date().toISOString()
       });
     }
+
     writeDb(db);
   } catch (error) {
-    console.warn('Не удалось получить новых клиентов из DummyJSON:', error.message);
-  } finally { floorSyncRunning = false; }
+    console.warn(
+      'Не удалось получить новых клиентов из DummyJSON:',
+      error.message
+    );
+  } finally {
+    floorSyncRunning = false;
+  }
 }
+
 setInterval(syncDummyLeads, FLOOR_INTERVAL_MS).unref();
 
 function normalizeClubResource(value, resourceType) {
